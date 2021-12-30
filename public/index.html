@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <style>
+      /* 添加安全区域 */
+      #app {
+        padding-top: calc(1rem + var(--edger-safe-area-inset-top))!important;
+      }
+    </style>
+    <!-- 注入 sdk -->
+    <script src="./sdk.min.js"></script>
+  </head>
+  <body style="background: #fff;">
+    <div id="app">Hello world!</div>
+    <div>
+      <button id="share-btn">分享</button>
+    </div>
+  </body>
+  <script>
+    window.onload = boot
+    function boot() {
+      edger.permission.request({
+        code: [
+          'advnwc',
+          'ainn',
+          'alarm',
+          'alldevs',
+          'coap',
+          'share',
+          // 'lora',
+          // 'mediacenter.readable',
+          // 'mediacenter.removable',
+          // 'mediacenter.writable',
+          // 'mqtt.publish',
+          // 'mqtt.subscribe',
+          // 'network',
+          // 'notify',
+          // 'phone.camera',
+          // 'phone.contacts',
+          // 'phone.geolocation',
+          // 'phone.microphone',
+          // 'phone.rtsp',
+          // 'phone.share',
+          // 'vehicle.cockpit',
+          // 'vehicle.diagnostics',
+          // 'vehicle.drive',
+          // 'vehicle.geolocation',
+          // 'vehicle.media',
+          'wallpaper'
+        ],
+        type: 'permissions'
+      }).then((data) => {
+        // data.success is 'true' means pops up successfully
+        console.log('>> data:', data)
+      }).catch(error => {
+        console.error(error);
+      });
+
+    }
+    document.getElementById('share-btn').onclick = function () {
+      edger.permission.fetch().then((data) => {
+        // data contains a complete permission table
+        console.log('>>', data)
+        if (!data.share) {
+          edger.app.open({
+            id: 'com.acoinfo.setting'
+          }, {
+            type: 'permissions', msg: {}
+          }).then(() => {}).catch(error => {
+            console.error(error);
+          });
+        }
+      }).catch(error => {
+        console.error(error);
+      });
+    }
+  </script>
+</html>
